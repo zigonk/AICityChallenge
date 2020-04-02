@@ -98,7 +98,7 @@ def getCuts(file_name, cap):
                 pass
 
     # print('Found %d scene changes.' % cnt)
-    cuts_file = os.path.join(os.path.dirname(file_name), 'cuts', os.path.basename(file_name) + '.json')
+    cuts_file = os.path.join(cuts_dir, os.path.basename(file_name) + '.json')
     with open(cuts_file, 'w') as f:
         json.dump(cuts, f)
 
@@ -111,12 +111,17 @@ if __name__ == '__main__':
                         help='Videos or directory containing videos to be processed.',
                         nargs='+',
                         type=str)
+    parser.add_argument('cuts_dir',
+                        help='Directory containing cut video information.',
+                        nargs='+',
+                        type=str)
 
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
     args = parser.parse_args()
     videos = args.vi_or_dir
+    cuts_dir = args.cuts_dir
 
     if len(videos) > 1:
         assert any([os.path.isdir(video) for video in videos]), 'Multiple inputs option is only for inputing videos.'
@@ -125,7 +130,7 @@ if __name__ == '__main__':
     if len(videos) == 1 and os.path.isdir(videos[0]):
         videos = glob.glob(os.path.join(videos[0], '*.mp4'))
 
-    cuts_dir = os.path.join(os.path.dirname(videos[0]), 'cuts')
+    # cuts_dir = os.path.join(os.path.dirname(videos[0]), '..', 'cuts')
     if not os.path.isdir(cuts_dir):
         os.mkdir(cuts_dir)
 
