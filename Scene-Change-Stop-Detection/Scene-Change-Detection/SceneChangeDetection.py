@@ -47,10 +47,10 @@ def getCuts(file_name, cap):
 
     cuts = []
     cnt=0
-    cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
-    cv2.resizeWindow('frame', 600, 350)
-    cv2.namedWindow('background frame', cv2.WINDOW_NORMAL)
-    cv2.resizeWindow('background frame', 600, 350)
+    # cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
+    # cv2.resizeWindow('frame', 600, 350)
+    # cv2.namedWindow('background frame', cv2.WINDOW_NORMAL)
+    # cv2.resizeWindow('background frame', 600, 350)
     cap.set(cv2.CAP_PROP_POS_FRAMES, begin_id)
 
     _, background_frame = cap.read()
@@ -83,10 +83,10 @@ def getCuts(file_name, cap):
 
                 # print frm_id, diff[0]
 
-                cv2.imshow('frame', mean_frame)
-                cv2.imshow('background frame', background_frame)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
+                # cv2.imshow('frame', mean_frame)
+                # cv2.imshow('background frame', background_frame)
+                # if cv2.waitKey(1) & 0xFF == ord('q'):
+                    # break
 
                 if diff[0]>=thresh:
                     cnt+=1
