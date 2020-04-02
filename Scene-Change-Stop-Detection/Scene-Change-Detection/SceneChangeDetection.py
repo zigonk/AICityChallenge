@@ -111,9 +111,9 @@ if __name__ == '__main__':
                         help='Videos or directory containing videos to be processed.',
                         nargs='+',
                         type=str)
-    parser.add_argument('cuts_dir',
+    parser.add_argument('--cuts_dir',
                         help='Directory containing cut video information.',
-                        nargs='+',
+                        # nargs='+',
                         type=str)
 
     if len(sys.argv) == 1:
