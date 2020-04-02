@@ -35,7 +35,7 @@ def LBP(frame):
 
                 frame[i][j]=newvalue
             except:
-                print i, j
+                print(i, j)
     return frame
 
 
@@ -81,7 +81,7 @@ def getCuts(file_name, cap):
                 for i in range(256):
                     diff+=abs(lbph[i]-background_lbph[i])
 
-                print frm_id, diff[0]
+                # print frm_id, diff[0]
 
                 cv2.imshow('frame', mean_frame)
                 cv2.imshow('background frame', background_frame)
@@ -90,14 +90,14 @@ def getCuts(file_name, cap):
 
                 if diff[0]>=thresh:
                     cnt+=1
-                    print "CUT "+str(cnt)+" Detected at frame "+str(frm_id)
+                    print("CUT "+str(cnt)+" Detected at frame "+str(frm_id))
                     cuts.append(frm_id)
                     background_frame = frame.copy()
 
             except UnboundLocalError:
                 pass
 
-    print 'Found %d scene changes.' % cnt
+    # print('Found %d scene changes.' % cnt)
     cuts_file = os.path.join(os.path.dirname(file_name), 'cuts', os.path.basename(file_name) + '.json')
     with open(cuts_file, 'w') as f:
         json.dump(cuts, f)
