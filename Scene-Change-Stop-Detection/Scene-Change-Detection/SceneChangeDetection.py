@@ -130,8 +130,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     videos = args.vi_or_dir
     cuts_dir = args.cuts_dir
-    start_id = args.start_id
-    stop_id = args.stop_id
+    start_id = int(args.start_id)
+    stop_id = int(args.stop_id)
 
     if len(videos) > 1:
         assert any([os.path.isdir(video) for video in videos]), 'Multiple inputs option is only for inputing videos.'
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 
     # cuts_dir = os.path.join(os.path.dirname(videos[0]), '..', 'cuts')
     if not os.path.isdir(cuts_dir):
-        os.mkdir(cuts_dir)
+        os.makedirs(cuts_dir)
 
     ignore_list = [100,  2,   46,  57,  78,  88, 15,   34,  49,  64,  80,  89, 16, \
                     38,  4,   67,  81,  90, 17,   39,  51,  6,   83,  93, 19,   3,   53,  70,  84,  98, \
