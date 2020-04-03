@@ -150,10 +150,12 @@ if __name__ == '__main__':
 
     for video_name in videos:
         video_number = os.path.basename(video_name)
-        video_number = video_number.split('.')[0]
+        video_number = int(video_number.split('.')[0])
         if (video_number in ignore_list):
+            print("Ignore {}".format(video_number))
             continue
         if (video_number in range(start_id, stop_id)):
+            print("Ignore {}".format(video_number))
             continue
         cap = cv2.VideoCapture(video_name)
         print('Processing file name: %s' % video_name)
