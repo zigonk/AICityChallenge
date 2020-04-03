@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
     ignore_list = [100,  2,   46,  57,  78,  88, 15,   34,  49,  64,  80,  89, 16, \
                     38,  4,   67,  81,  90, 17,   39,  51,  6,   83,  93, 19,   3,   53,  70,  84,  98, \
-                    26,   44,  55,  74,  87,  99]
+                    26,   44,  55, 58,  74,  87,  99]
 
     for video_name in videos:
         video_number = os.path.basename(video_name)
