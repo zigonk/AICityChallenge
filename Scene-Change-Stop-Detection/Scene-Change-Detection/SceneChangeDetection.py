@@ -154,7 +154,7 @@ if __name__ == '__main__':
         if (video_number in ignore_list):
             print("Ignore {}".format(video_number))
             continue
-        if (video_number in range(start_id, stop_id)):
+        if not (video_number in range(start_id, stop_id)):
             print("Ignore {}".format(video_number))
             continue
         cap = cv2.VideoCapture(video_name)
