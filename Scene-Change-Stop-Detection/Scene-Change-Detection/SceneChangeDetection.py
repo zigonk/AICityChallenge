@@ -115,6 +115,14 @@ if __name__ == '__main__':
                         help='Directory containing cut video information.',
                         # nargs='+',
                         type=str)
+    parser.add_argument('--start_id',
+                        help='Process start at <video_id>',
+                        # nargs='+',
+                        type=str)
+    parser.add_argument('--stop_id',
+                        help='Process stop at <video_id>',
+                        # nargs='+',
+                        type=str)
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -122,6 +130,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     videos = args.vi_or_dir
     cuts_dir = args.cuts_dir
+    start_id = args.start_id
+    stop_id = args.stop_id
 
     if len(videos) > 1:
         assert any([os.path.isdir(video) for video in videos]), 'Multiple inputs option is only for inputing videos.'
@@ -134,8 +144,17 @@ if __name__ == '__main__':
     if not os.path.isdir(cuts_dir):
         os.mkdir(cuts_dir)
 
+    ignore_list = [100,  2,   46,  57,  78,  88, 15,   34,  49,  64,  80,  89, 16, \
+                    38,  4,   67,  81,  90, 17,   39,  51,  6,   83,  93, 19,   3,   53,  70,  84,  98, \
+                    26,   44,  55,  74,  87,  99]
 
     for video_name in videos:
+        video_number = os.path.basename(video_name)
+        video_number = video_number.split('.')[0]
+        if (video_number in ignore_list):
+            continue
+        if (video_number in range(start_id, stop_id)):
+            continue
         cap = cv2.VideoCapture(video_name)
         print('Processing file name: %s' % video_name)
         getCuts(video_name, cap)
