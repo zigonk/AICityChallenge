@@ -61,7 +61,7 @@ def region_extract(mask, threshold_s = 2000):
 
     return mask
 
-def extractMask(video_id, video_path, data_path, mask_path):
+def extractMask(video_id):
     for vid in range(video_id, video_id + 1):
     #[6,11,12,17,20,22,24,26,27,28,32,34,35,44,50,51,55,59,64,66,71,77,79,82,85,90,96,97]:
         capture = cv2.VideoCapture(video_path + '/%d.mp4' %vid)
@@ -196,7 +196,7 @@ if __name__== '__main__':
     # videos = [61, 45, 84]
     # videos = [51]
     for c in range(start_id, stop_id):
-        extractMask(c, video_path, data_path, mask_path)
+        extractMask(c)
 
     # expandMask(video_id = 46, scene_id = 1)
 

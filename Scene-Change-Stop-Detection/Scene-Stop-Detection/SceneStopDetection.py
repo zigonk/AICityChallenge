@@ -35,7 +35,7 @@ def LBP(frame):
 
                 frame[i][j]=newvalue
             except:
-                print i, j
+                print(i, j)
     return frame
 
 
@@ -75,7 +75,7 @@ def getCuts(file_name, cap):
 
             if diff[0] <= thresh:
                 cnt+=1
-                print "CUT "+str(cnt)+" Detected at frame "+str(frm_id)
+                print("CUT "+str(cnt)+" Detected at frame "+str(frm_id))
                 cuts.append(frm_id)
 
             prev_lbph = lbph
@@ -83,8 +83,8 @@ def getCuts(file_name, cap):
         except UnboundLocalError:
             pass
 
-    print 'Found %d scene changes.' % cnt
-    cuts_file = os.path.join(os.path.dirname(file_name), 'stop_cuts', os.path.basename(file_name) + '.json')
+    print('Found %d scene changes.' % cnt)
+    cuts_file = os.path.join(cuts_dir, os.path.basename(file_name) + '.json')
     with open(cuts_file, 'w') as f:
         json.dump(cuts, f)
 
@@ -97,27 +97,49 @@ if __name__ == '__main__':
                         help='Videos or directory containing videos to be processed.',
                         nargs='+',
                         type=str)
+    parser.add_argument('--cuts_dir',
+                        help='Directory containing cut video information.',
+                        # nargs='+',
+                        type=str)
+    parser.add_argument('--start_id',
+                        help='Process start at <video_id>',
+                        # nargs='+',
+                        type=str)
+    parser.add_argument('--stop_id',
+                        help='Process stop at <video_id>',
+                        # nargs='+',
+                        type=str)
 
     if len(sys.argv) == 1:
         parser.print_help()
         sys.exit(1)
     args = parser.parse_args()
     videos = args.vi_or_dir
+    cuts_dir = args.cuts_dir
+    start_id = int(args.start_id)
+    stop_id = int(args.stop_id)
 
-    if len(videos) > 1:
-        print [os.path.isdir(video) for video in videos]
-        assert all([os.path.isfile(video) for video in videos]), 'Multiple inputs option is only for inputing videos.'
-    assert all([os.path.dirname(video) == os.path.dirname(videos[0]) for video in videos]), 'All videos should be placed in the same directory.'
+    # if len(videos) > 1:
+    #     print [os.path.isdir(video) for video in videos]
+    #     assert all([os.path.isfile(video) for video in videos]), 'Multiple inputs option is only for inputing videos.'
+    # assert all([os.path.dirname(video) == os.path.dirname(videos[0]) for video in videos]), 'All videos should be placed in the same directory.'
 
     if len(videos) == 1 and os.path.isdir(videos[0]):
         videos = glob.glob(os.path.join(videos[0], '*.mp4'))
 
-    cuts_dir = os.path.join(os.path.dirname(videos[0]), 'stop_cuts')
+    # cuts_dir = os.path.join(os.path.dirname(videos[0]), 'stop_cuts')
+    # if not os.path.isdir(cuts_dir):
+    #     os.mkdir(cuts_dir)
     if not os.path.isdir(cuts_dir):
-        os.mkdir(cuts_dir)
+        os.makedirs(cuts_dir)
 
 
     for video_name in videos:
+        video_number = os.path.basename(video_name)
+        video_number = int(video_number.split('.')[0])
+        if not (video_number in range(start_id, stop_id)):
+            print("Ignore {}".format(video_number))
+            continue
         cap = cv2.VideoCapture(video_name)
         print('Processing file name: %s' % video_name)
         getCuts(video_name, cap)
