@@ -34,7 +34,7 @@ if __name__ == '__main__':
             cur_frm = cut + 30
         if cur_frm < num_frms - 5*30:
             dataset_cuts[basename.split('.')[0]].append((cur_frm, num_frms))
-        print basename.split('.')[0], len(cuts), dataset_cuts[basename.split('.')[0]]
+        print(basename.split('.')[0], len(cuts), dataset_cuts[basename.split('.')[0]])
 
     with open(os.path.join(cuts_dir, 'unchanged_scene_periods.json'), 'w') as f:
         json.dump(dataset_cuts, f)
