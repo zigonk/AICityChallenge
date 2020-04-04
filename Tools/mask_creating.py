@@ -14,6 +14,7 @@ import json
 import imageio
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
+import argparse
 
 def sigmoid(x):
     return (1 / (1 + np.exp(-x))).astype(np.float32)
@@ -60,9 +61,7 @@ def region_extract(mask, threshold_s = 2000):
 
     return mask
 
-def extractMask(video_id):
-    video_path = '/media/tuanbi97/Vesty/Datasets/aic19-track3-test-data'
-    data_path = '/media/tuanbi97/Vesty/Thesis/BackupPlan/Data'
+def extractMask(video_id, video_path, data_path, mask_path):
     for vid in range(video_id, video_id + 1):
     #[6,11,12,17,20,22,24,26,27,28,32,34,35,44,50,51,55,59,64,66,71,77,79,82,85,90,96,97]:
         capture = cv2.VideoCapture(video_path + '/%d.mp4' %vid)
@@ -103,7 +102,7 @@ def extractMask(video_id):
             mask = (temp > 0.2).astype(np.uint8)
             #mask = cv2.blur(mask, (3,3))
 
-            np.save('masks_refine_non_expand/mask_%d_%d.npy' %(vid, scenes_id), mask)
+            np.save(mask_path + '/masks_refine_non_expand/mask_%d_%d.npy' %(vid, scenes_id), mask)
 
             for count in range(2):
                 mask2 = np.zeros_like(mask)
@@ -138,8 +137,10 @@ def extractMask(video_id):
 
             #mask = cv2.resize(mask, (800,410))
             mask = cv2.blur(mask, (5,5))
-            np.save('masks_refine_v3/mask_%d_%d.npy' %(vid, scenes_id), mask)
-            imageio.imwrite('masks/%d_%d.jpg' %(vid, scenes_id), mask.reshape(410,800,1).astype(np.uint8) * mid_frame)
+            # np.save('masks_refine_v3/mask_%d_%d.npy' %(vid, scenes_id), mask)
+            mask_refine_path = mask_path + '/masks_refine_v3/mask_%d_%d.npy' %(vid, scenes_id)
+            expandMask(vid, scenes_id, mask, mask_refine_path)
+            imageio.imwrite(mask_path + '/masks/%d_%d.jpg' %(vid, scenes_id), mask.reshape(410,800,1).astype(np.uint8) * mid_frame)
 
 def verifyMask(video_id, scene_id, expand):
     if expand == False:
@@ -153,9 +154,9 @@ def verifyMask(video_id, scene_id, expand):
         plt.imshow(mask, cmap='gray')
         plt.show()
 
-def expandMask(video_id, scene_id):
-    mask_path = '/media/tuanbi97/Vesty/Thesis/BackupPlan/Data/masks_refine_v3/' + 'mask_' + str(video_id) + '_' + str(scene_id) + '.npy'
-    mask = np.load(mask_path)
+def expandMask(video_id, scene_id, mask, mask_path):
+    # mask_path = '/media/tuanbi97/Vesty/Thesis/BackupPlan/Data/masks_refine_v3/' + 'mask_' + str(video_id) + '_' + str(scene_id) + '.npy'
+    # mask = np.load(mask_path)
     for count in range(4):
         mask2 = np.zeros_like(mask)
         for i in range(1, mask.shape[0] - 1):
@@ -168,14 +169,36 @@ def expandMask(video_id, scene_id):
     np.save(mask_path, mask)
 
 if __name__== '__main__':
+    parser = argparse.ArgumentParser(description='Preprocess cut files.')
+    parser.add_argument('--video',
+                        help='Directory containing video.',
+                        type=str)
+    parser.add_argument('--save',
+                        help='Directory containing mask.',
+                        type=str)
+    parser.add_argument('--data',
+                        help='Directory containing preprocessing data.',
+                        type=str)
+    parser.add_argument('--start_id',
+                        help='Process start at <video_id>',
+                        type=str)
+    parser.add_argument('--stop_id',
+                        help='Process stop at <video_id>',
+                        type=str)
+    args = parser.parse_args()
+    mask_path = args.mask
+    video_path = args.video
+    data_path = args.data
+    start_id = int(args.start_id)
+    stop_id  = int(args.stop_id)
     # extract mask
     # videos = [45, 61, 84, 89]
     # videos = [61, 45, 84]
     # videos = [51]
-    # for c in videos:
-    #     extractMask(video_id = c)
+    for c in range(start_id, stop_id):
+        extractMask(c, video_path, data_path, mask_path)
 
     # expandMask(video_id = 46, scene_id = 1)
 
     #visualize extracted masks
-    verifyMask(video_id = 51, scene_id = 1, expand = True)
+    # verifyMask(video_id = 51, scene_id = 1, expand = True)
