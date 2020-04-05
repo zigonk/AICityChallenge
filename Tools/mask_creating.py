@@ -101,7 +101,8 @@ def extractMask(video_id):
             #temp = normalize(temp.reshape(1, 410*800)).reshape(410,800)
             mask = (temp > 0.2).astype(np.uint8)
             #mask = cv2.blur(mask, (3,3))
-
+            if not os.path.isdir(mask_path + '/masks_refine_non_expand/'):
+                os.makedirs(mask_path + '/masks_refine_non_expand/')
             np.save(mask_path + '/masks_refine_non_expand/mask_%d_%d.npy' %(vid, scenes_id), mask)
 
             for count in range(2):
@@ -138,6 +139,8 @@ def extractMask(video_id):
             #mask = cv2.resize(mask, (800,410))
             mask = cv2.blur(mask, (5,5))
             # np.save('masks_refine_v3/mask_%d_%d.npy' %(vid, scenes_id), mask)
+            if not os.path.isdir(mask_path + '/masks_refine_v3/'):
+                os.makedirs(mask_path + '/masks_refine_v3/')
             mask_refine_path = mask_path + '/masks_refine_v3/mask_%d_%d.npy' %(vid, scenes_id)
             expandMask(vid, scenes_id, mask, mask_refine_path)
             imageio.imwrite(mask_path + '/masks/%d_%d.jpg' %(vid, scenes_id), mask.reshape(410,800,1).astype(np.uint8) * mid_frame)
