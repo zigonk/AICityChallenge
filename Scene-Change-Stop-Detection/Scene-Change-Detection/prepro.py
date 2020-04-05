@@ -11,17 +11,21 @@ if __name__ == '__main__':
     parser.add_argument('--cuts_dir',
                         help='Directory containing cut video information.',
                         type=str)
+    parser.add_argument('--vid_dir',
+                        help='Directory containing cut video information.',
+                        type=str)
     args = parser.parse_args()
     cuts_dir = args.cuts_dir
+    vid_dir = args.vid_dir
     dataset_cuts = {}
     cuts_files = sorted(list(glob.glob(os.path.join(cuts_dir, '*.mp4.json'))), key=lambda x: int(os.path.basename(x).split('.')[0]))
     for cuts_file in cuts_files:
         with open(cuts_file, 'r') as f:
             cuts = json.load(f)
-        dirname = os.path.dirname(cuts_file)
+#         dirname = os.path.dirname(cuts_file)
         basename = os.path.basename(cuts_file)
 
-        vid = cv2.VideoCapture(os.path.join(dirname[:-4], basename[:-5]))
+        vid = cv2.VideoCapture(os.path.join(vid_dir, basename[:-5]))
         num_frms = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
         vid.release()
 
