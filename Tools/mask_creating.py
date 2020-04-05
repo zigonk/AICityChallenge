@@ -143,6 +143,8 @@ def extractMask(video_id):
                 os.makedirs(mask_path + '/masks_refine_v3/')
             mask_refine_path = mask_path + '/masks_refine_v3/mask_%d_%d.npy' %(vid, scenes_id)
             expandMask(vid, scenes_id, mask, mask_refine_path)
+            if not os.path.isdir(mask_path + '/masks/'):
+                os.makedirs(mask_path + '/masks/')
             imageio.imwrite(mask_path + '/masks/%d_%d.jpg' %(vid, scenes_id), mask.reshape(410,800,1).astype(np.uint8) * mid_frame)
 
 def verifyMask(video_id, scene_id, expand):
