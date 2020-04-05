@@ -186,7 +186,7 @@ if __name__== '__main__':
                         help='Process stop at <video_id>',
                         type=str)
     args = parser.parse_args()
-    mask_path = args.mask
+    mask_path = args.save
     video_path = args.video
     data_path = args.data
     start_id = int(args.start_id)
