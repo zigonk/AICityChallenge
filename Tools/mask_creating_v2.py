@@ -49,6 +49,7 @@ def extractMask(video_id):
       print("Start vid {} scene {}".format(vid, scene_id))
       start = cur_vid_scenes[scene_id][0]
       end   = cur_vid_scenes[scene_id][1]
+      preview_frame = frame.copy()
       while ret:
         bs.apply(frame)
         bg_img = bs.getBackgroundImage()
@@ -62,6 +63,7 @@ def extractMask(video_id):
           # remove abnormal trajectory
           _, mask = cv2.threshold(mask, 10, 255, cv2.THRESH_TOZERO)
           _, mask = cv2.threshold(mask, 110, 255, cv2.THRESH_BINARY)
+          preview_frame = frame.copy()
         elif cur_frame > end:
           mask = apply_morphology(mask)
           mask = (mask > 0).astype(np.uint8)
@@ -78,7 +80,7 @@ def extractMask(video_id):
       if cur_frame <= end:
         mask = apply_morphology(mask)
         mask = (mask > 0).astype(np.uint8)
-        save_mask(mask, vid, scene_id, frame)
+        save_mask(mask, vid, scene_id, preview_frame))
 
 if __name__== '__main__':
     parser = argparse.ArgumentParser(description='Preprocess cut files.')
