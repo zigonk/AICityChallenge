@@ -80,7 +80,7 @@ def extractMask(video_id):
       if cur_frame <= end:
         mask = apply_morphology(mask)
         mask = (mask > 0).astype(np.uint8)
-        save_mask(mask, vid, scene_id, preview_frame))
+        save_mask(mask, vid, scene_id, preview_frame)
 
 if __name__== '__main__':
     parser = argparse.ArgumentParser(description='Preprocess cut files.')
