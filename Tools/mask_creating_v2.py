@@ -47,9 +47,9 @@ def extractMask(video_id):
       cur_frame = 0
       mask = 0
       print("Start vid {} scene {}".format(vid, scene_id))
+      start = cur_vid_scenes[scene_id][0]
+      end   = cur_vid_scenes[scene_id][1]
       while ret:
-        start = cur_vid_scenes[scene_id][0]
-        end   = cur_vid_scenes[scene_id][1]
         bs.apply(frame)
         bg_img = bs.getBackgroundImage()
 
@@ -70,9 +70,15 @@ def extractMask(video_id):
           if (scene_id == len(cur_vid_scenes)):
             break
           print("Start vid {} scene {}".format(vid, scene_id))
+          start = cur_vid_scenes[scene_id][0]
+          end   = cur_vid_scenes[scene_id][1]
           mask = 0
         cur_frame += 1
         ret, frame = capture.read()
+      if cur_frame <= end:
+        mask = apply_morphology(mask)
+        mask = (mask > 0).astype(np.uint8)
+        save_mask(mask, vid, scene_id, frame)
 
 if __name__== '__main__':
     parser = argparse.ArgumentParser(description='Preprocess cut files.')
