@@ -93,6 +93,7 @@ def extractMask(video_id):
       scene_id = 0
       cur_vid_scenes = scenes['%d' %vid]
       cur_frame = 0
+      mask = 0
       while ret:
         start = cur_vid_scenes[scene_id][0]
         end   = cur_vid_scenes[scene_id][1]
@@ -113,7 +114,7 @@ def extractMask(video_id):
           mask = (mask > 0).astype(np.uint8)
           save_mask(mask, vid, scene_id, frame)
           scene_id += 1
-          mask -= mask
+          mask = 0
         cur_frame += 1
         ret, frame = capture.read()
 
