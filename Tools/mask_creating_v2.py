@@ -53,7 +53,7 @@ def extractMask(video_id):
         if (cur_frame in range(start, end + 1)):
           mask = np.load(mask_path + "/mask_{}_{}.npy".format(video_id, scene_id + 1))
           visualize_with_mask = mask * cur_frame
-          imageio.imwrite(visualize_path + '/{}/{}.png'.format(vid, cur_frame))
+          imageio.imwrite(visualize_path + '/{}/{}.png'.format(vid, cur_frame), visualize_with_mask)
         cur_frame += 1
         ret, frame = capture.read()
 
