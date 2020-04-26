@@ -49,11 +49,15 @@ def extractMask(video_id):
       print("Start vid {} scene {}".format(vid, scene_id))
       start = cur_vid_scenes[scene_id][0]
       end   = cur_vid_scenes[scene_id][1]
+      mask = np.load(mask_path + "/mask_{}_{}.npy".format(video_id, scene_id + 1))
       while ret:
         if (cur_frame in range(start, end + 1)):
-          mask = np.load(mask_path + "/mask_{}_{}.npy".format(video_id, scene_id + 1))
           visualize_with_mask = mask * cur_frame
           imageio.imwrite(visualize_path + '/{}/{}.png'.format(vid, cur_frame), visualize_with_mask)
+        elif (cur_frame > end):
+          scene_id += 1
+          start = cur_vid_scenes[scene_id][0]
+          end = cur_vid_scenes[scene_id][1]
         cur_frame += 1
         ret, frame = capture.read()
 
@@ -88,7 +92,8 @@ if __name__== '__main__':
     # videos = [45, 61, 84, 89]
     # videos = [61, 45, 84]
     # videos = [51]
-    for c in range(start_id, stop_id):
+    videos = [37, 38, 46, 82]
+    for c in videos:
         extractMask(c)
 
     # expandMask(video_id = 46, scene_id = 1)
