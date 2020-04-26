@@ -37,10 +37,10 @@ def save_mask(mask, vid, scene_id, frame):
 
 def extractMask(video_id):
     for vid in range(video_id, video_id + 1):
+      if not os.path.exists(visualize_path + '/%d/' %vid):
+            os.makedirs(visualize_path + '/%d/' %vid)
       capture = cv2.VideoCapture(video_path + '/%d.mp4' %vid)
       scenes = json.load(open(data_path + '/unchanged_scene_periods.json'))
-      bs = cv2.createBackgroundSubtractorMOG2()
-      bs.setHistory(120)
       ret, frame = capture.read()
       scene_id = 0
       cur_vid_scenes = scenes['%d' %vid]
@@ -49,38 +49,13 @@ def extractMask(video_id):
       print("Start vid {} scene {}".format(vid, scene_id))
       start = cur_vid_scenes[scene_id][0]
       end   = cur_vid_scenes[scene_id][1]
-      preview_frame = frame.copy()
       while ret:
-        bs.apply(frame)
-        bg_img = bs.getBackgroundImage()
-
-        fg = cv2.subtract(frame,bg_img)
-        fg = cv2.cvtColor(fg, cv2.COLOR_BGR2GRAY)
         if (cur_frame in range(start, end + 1)):
-          mask = cv2.bitwise_or(mask,fg)
-          mask = cv2.medianBlur(mask, 3) # Clear the image, remove small spots
-          mask = cv2.GaussianBlur(mask, (3, 3), 0) # Smooth the image
-          # remove abnormal trajectory
-          _, mask = cv2.threshold(mask, 10, 255, cv2.THRESH_TOZERO)
-          _, mask = cv2.threshold(mask, 110, 255, cv2.THRESH_BINARY)
-          preview_frame = frame.copy()
-        elif cur_frame > end:
-          mask = apply_morphology(mask)
-          mask = (mask > 0).astype(np.uint8)
-          save_mask(mask, vid, scene_id, frame)
-          scene_id += 1
-          if (scene_id == len(cur_vid_scenes)):
-            break
-          print("Start vid {} scene {}".format(vid, scene_id))
-          start = cur_vid_scenes[scene_id][0]
-          end   = cur_vid_scenes[scene_id][1]
-          mask = 0
+          mask = np.load(mask_path + "_{}_{}.npy".format(scene_id, video_id))
+          visualize_with_mask = mask * cur_frame
+          imageio.imwrite(visualize_path + '/{}/{}.png'.format(vid, cur_frame))
         cur_frame += 1
         ret, frame = capture.read()
-      if cur_frame <= end:
-        mask = apply_morphology(mask)
-        mask = (mask > 0).astype(np.uint8)
-        save_mask(mask, vid, scene_id, preview_frame)
 
 if __name__== '__main__':
     parser = argparse.ArgumentParser(description='Preprocess cut files.')
@@ -93,6 +68,9 @@ if __name__== '__main__':
     parser.add_argument('--data',
                         help='Directory containing preprocessing data.',
                         type=str)
+    parser.add_argument('--visualize',
+                        help='Directory containing visualize masks',
+                        type=str)
     parser.add_argument('--start_id',
                         help='Process start at <video_id>',
                         type=str)
@@ -103,6 +81,7 @@ if __name__== '__main__':
     mask_path = args.save
     video_path = args.video
     data_path = args.data
+    visualize_path = args.visualize
     start_id = int(args.start_id)
     stop_id  = int(args.stop_id)
     # extract mask
