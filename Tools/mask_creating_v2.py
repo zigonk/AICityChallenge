@@ -49,7 +49,7 @@ def extractMask(video_id):
       print("Start vid {} scene {}".format(vid, scene_id))
       start = cur_vid_scenes[scene_id][0]
       end   = cur_vid_scenes[scene_id][1]
-      mask = np.load(mask_path + "/mask_{}_{}.npy".format(video_id, scene_id + 1))
+      mask = np.load(mask_path + "/mask_{}_{}.npy".format(video_id, scene_id + 1)).reshape(410,800,1).astype(np.uint8)
       while ret:
         if (cur_frame in range(start, end + 1)):
           visualize_with_mask = mask * cur_frame
